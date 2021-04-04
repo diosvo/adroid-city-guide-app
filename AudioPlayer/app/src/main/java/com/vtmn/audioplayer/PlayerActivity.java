@@ -1,5 +1,6 @@
 package com.vtmn.audioplayer;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -26,7 +29,7 @@ import java.util.ArrayList;
 
 import static com.vtmn.audioplayer.MainActivity.musicFiles;
 
-public class PlayerActivity extends AppCompatActivity {
+public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
     TextView song_name, artist_name, duration_played, duration_total;
     ImageView img_cover, btnNext, btnPrev, btnBack, btnShuffle, btnRepeat;
     FloatingActionButton btnPlayPause;
@@ -49,6 +52,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         song_name.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
+        mediaPlayer.setOnCompletionListener(this);
 
 //        Seek bar
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -163,7 +167,8 @@ public class PlayerActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);
                 }
             });
-            btnPlayPause.setImageResource(R.drawable.ic_pause);
+            mediaPlayer.setOnCompletionListener(this);
+            btnPlayPause.setBackgroundResource(R.drawable.ic_pause);
             mediaPlayer.start();
         } else {
             mediaPlayer.stop();
@@ -188,7 +193,8 @@ public class PlayerActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);
                 }
             });
-            btnPlayPause.setImageResource(R.drawable.ic_play);
+            mediaPlayer.setOnCompletionListener(this);
+            btnPlayPause.setBackgroundResource(R.drawable.ic_play);
         }
     }
 
@@ -250,7 +256,8 @@ public class PlayerActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);
                 }
             });
-            btnPlayPause.setImageResource(R.drawable.ic_pause);
+            mediaPlayer.setOnCompletionListener(this);
+            btnPlayPause.setBackgroundResource(R.drawable.ic_pause);
             mediaPlayer.start();
         } else {
             mediaPlayer.stop();
@@ -275,7 +282,8 @@ public class PlayerActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);
                 }
             });
-            btnPlayPause.setImageResource(R.drawable.ic_play);
+            mediaPlayer.setOnCompletionListener(this);
+            btnPlayPause.setBackgroundResource(R.drawable.ic_play);
         }
     }
 
@@ -337,20 +345,18 @@ public class PlayerActivity extends AppCompatActivity {
     private void metaData(Uri uri) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(uri.toString());
+
         int totalDuration = Integer.parseInt(listSongs.get(position).getDuration()) / 1000;
         duration_total.setText(formattedTime(totalDuration));
-        byte[] img = retriever.getEmbeddedPicture();
 
+        byte[] img = retriever.getEmbeddedPicture();
         Bitmap bitmap;
 
         if (img != null) {
-            Glide.with(this)
-                    .asBitmap()
-                    .load(img)
-                    .into(img_cover);
-
 //            Animation background color
             bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            ImageAnimation(this, img_cover, bitmap);
+
             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(@Nullable Palette palette) {
@@ -406,6 +412,58 @@ public class PlayerActivity extends AppCompatActivity {
             mContainer.setBackgroundResource(R.drawable.main_bg);
             song_name.setTextColor(Color.WHITE);
             artist_name.setTextColor(Color.DKGRAY);
+        }
+    }
+
+
+    //    Image Animation
+    public void ImageAnimation(Context context, ImageView imageView, Bitmap bitmap) {
+        Animation animOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
+        Animation animIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+
+        animOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Glide.with(context).load(bitmap).into(imageView);
+                animIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                imageView.startAnimation(animIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        imageView.startAnimation(animOut);
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        btnNextClicked();
+        if (mediaPlayer != null) {
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+            mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(this);
         }
     }
 }
