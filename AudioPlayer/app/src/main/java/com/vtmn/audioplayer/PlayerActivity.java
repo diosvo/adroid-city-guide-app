@@ -1,5 +1,9 @@
 package com.vtmn.audioplayer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -7,10 +11,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -334,16 +341,71 @@ public class PlayerActivity extends AppCompatActivity {
         duration_total.setText(formattedTime(totalDuration));
         byte[] img = retriever.getEmbeddedPicture();
 
+        Bitmap bitmap;
+
         if (img != null) {
             Glide.with(this)
                     .asBitmap()
                     .load(img)
                     .into(img_cover);
+
+//            Animation background color
+            bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(@Nullable Palette palette) {
+                    Palette.Swatch swatch = palette.getDominantSwatch();
+                    if (swatch != null) {
+                        ImageView gradient = findViewById(R.id.imgViewGradient);
+                        RelativeLayout mContainer = findViewById(R.id.mContainer);
+                        gradient.setBackgroundResource(R.drawable.gradient_bg);
+                        mContainer.setBackgroundResource(R.drawable.main_bg);
+
+                        GradientDrawable gradientDrawable = new GradientDrawable(
+                                GradientDrawable.Orientation.BOTTOM_TOP,
+                                new int[]{0xff000000, 0x00000000}
+                        );
+                        gradient.setBackground(gradientDrawable);
+                        GradientDrawable gradientDrawableBg = new GradientDrawable(
+                                GradientDrawable.Orientation.BOTTOM_TOP,
+                                new int[]{0xff000000, 0xff000000}
+                        );
+                        mContainer.setBackground(gradientDrawableBg);
+                        song_name.setTextColor(Color.WHITE);
+                        artist_name.setTextColor(Color.DKGRAY);
+                    } else {
+                        ImageView gradient = findViewById(R.id.imgViewGradient);
+                        RelativeLayout mContainer = findViewById(R.id.mContainer);
+                        gradient.setBackgroundResource(R.drawable.gradient_bg);
+                        mContainer.setBackgroundResource(R.drawable.main_bg);
+
+                        GradientDrawable gradientDrawable = new GradientDrawable(
+                                GradientDrawable.Orientation.BOTTOM_TOP,
+                                new int[]{swatch.getRgb(), 0x00000000}
+                        );
+                        gradient.setBackground(gradientDrawable);
+                        GradientDrawable gradientDrawableBg = new GradientDrawable(
+                                GradientDrawable.Orientation.BOTTOM_TOP,
+                                new int[]{swatch.getRgb(), swatch.getRgb()}
+                        );
+                        mContainer.setBackground(gradientDrawableBg);
+                        song_name.setTextColor(Color.WHITE);
+                        artist_name.setTextColor(Color.DKGRAY);
+                    }
+                }
+            });
         } else {
             Glide.with(this)
                     .asBitmap()
                     .load(R.drawable.empty)
                     .into(img_cover);
+
+            ImageView gradient = findViewById(R.id.imgViewGradient);
+            RelativeLayout mContainer = findViewById(R.id.mContainer);
+            gradient.setBackgroundResource(R.drawable.gradient_bg);
+            mContainer.setBackgroundResource(R.drawable.main_bg);
+            song_name.setTextColor(Color.WHITE);
+            artist_name.setTextColor(Color.DKGRAY);
         }
     }
 }

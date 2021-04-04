@@ -70,8 +70,7 @@
             android:id="@+id/imgViewGradient"
             android:layout_width="match_parent"
             android:layout_height="320dp"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/gradient_bg" />
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
     <TextView
