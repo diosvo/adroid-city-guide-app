@@ -1,6 +1,7 @@
 package com.vtmn.audioplayer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
                     .load(R.drawable.empty)
                     .into(holder.music_img);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public  void onClick(View v) {
+                Intent intent = new Intent(mContext, PlayerActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
