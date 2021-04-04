@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     static ArrayList<MusicFiles> musicFiles;
+    static boolean shuffleBoolean = false, repeatBoolean = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
