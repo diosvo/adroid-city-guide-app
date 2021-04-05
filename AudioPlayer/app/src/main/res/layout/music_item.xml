@@ -3,23 +3,37 @@
     android:id="@+id/audio_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
     android:background="@color/black"
-    android:paddingRight="10dp"
-    android:layout_marginBottom="10dp"
+    android:paddingLeft="12dp"
     android:textAlignment="center">
 
     <ImageView
         android:id="@+id/music_img"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:padding="5dp" />
+        android:src="@drawable/empty" />
 
     <TextView
         android:id="@+id/music_file_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_toStartOf="@+id/ic_menuMore"
+        android:layout_toEndOf="@+id/music_img"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:text="File Name"
         android:textColor="@color/white" />
+
+    <ImageView
+        android:id="@+id/ic_menuMore"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_more" />
 </RelativeLayout>
