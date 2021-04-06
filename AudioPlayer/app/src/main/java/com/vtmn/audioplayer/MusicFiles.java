@@ -17,6 +17,10 @@ public class MusicFiles {
         this.id = id;
     }
 
+    public MusicFiles() {
+
+    }
+
     public String getPath() {
         return path;
     }
@@ -57,8 +61,12 @@ public class MusicFiles {
         this.duration = duration;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
 }

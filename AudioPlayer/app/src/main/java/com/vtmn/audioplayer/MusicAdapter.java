@@ -70,9 +70,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
                 popupMenu.show();
 
                 popupMenu.setOnMenuItemClickListener((item) -> {
-                    if (item.getItemId() == R.id.delete) {
-                        Toast.makeText(mContext, "File Deleted!", Toast.LENGTH_SHORT).show();
-                        deleteFile(position, v);
+                    switch (item.getItemId()) {
+                        case R.id.delete:
+                            deleteFile(position, v);
+                            break;
                     }
                     return true;
                 });
@@ -93,7 +94,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             notifyItemRangeChanged(position, mFiles.size());
             Snackbar.make(v, "File Deleted!", Snackbar.LENGTH_LONG).show();
         } else {
-            Snackbar.make(v, "Can't be deleted!", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(v, "Something went wrong!", Snackbar.LENGTH_LONG).show();
         }
     }
 

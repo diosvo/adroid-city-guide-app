@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         permission();
     }
 
+    //    WRITE_EXTERNAL_STORAGE permission
     private void permission() {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
@@ -57,13 +59,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //    Declare var
     private void initViewPage() {
         ViewPager viewPager = findViewById(R.id.viewpager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragments(new SongsFragment(), "Songs");
-        viewPagerAdapter.addFragments(new AlbumFragment(), "Albums");
+        viewPagerAdapter.addFragments(new AlbumFragment(), "Playlists");
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
