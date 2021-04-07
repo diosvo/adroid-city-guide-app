@@ -31,6 +31,7 @@ import java.util.Random;
 import static com.vtmn.audioplayer.MainActivity.musicFiles;
 import static com.vtmn.audioplayer.MainActivity.repeatBoolean;
 import static com.vtmn.audioplayer.MainActivity.shuffleBoolean;
+import static com.vtmn.audioplayer.MusicAdapter.mFiles;
 
 public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
     TextView song_name, artist_name, duration_played, duration_total;
@@ -357,7 +358,13 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
     private void getIntentMethod() {
         position = getIntent().getIntExtra("position", -1);
-        listSongs = musicFiles;
+//        listSongs = musicFiles;
+        String sender = getIntent().getStringExtra("playlistDetails");
+        if(sender != null && sender.equals("playlistDetails")) {
+            listSongs = musicFiles;
+        } else {
+            listSongs = mFiles;
+        }
         if (listSongs != null) {
             btnPlayPause.setImageResource(R.drawable.ic_pause);
             uri = Uri.parse(listSongs.get(position).getPath());

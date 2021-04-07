@@ -10,10 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.vtmn.audioplayer.MainActivity.musicFiles;
+import static com.vtmn.audioplayer.MusicAdapter.mFiles;
 
 public class SongsFragment extends Fragment {
     RecyclerView recyclerView;
-    MusicAdapter musicAdapter;
+    static MusicAdapter musicAdapter;
 
     public SongsFragment() {
         // Required empty public constructor

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder> {
     private final Context mContext;
-    private final ArrayList<MusicFiles> mFiles;
+    static ArrayList<MusicFiles> mFiles;
 
     MusicAdapter(Context mContext, ArrayList<MusicFiles> mFiles) {
         this.mContext = mContext;
@@ -121,5 +121,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         byte[] img = retriever.getEmbeddedPicture();
         retriever.release();
         return img;
+    }
+
+    void updateList(ArrayList<MusicFiles> musicFilesArrayList) {
+        mFiles = new ArrayList<>();
+        mFiles.addAll(musicFilesArrayList);
+        notifyDataSetChanged();
     }
 }
