@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragments(new SongsFragment(), "Songs");
-        viewPagerAdapter.addFragments(new AlbumFragment(), "Playlists");
+        viewPagerAdapter.addFragments(new PlaylistFragment(), "Playlists");
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }

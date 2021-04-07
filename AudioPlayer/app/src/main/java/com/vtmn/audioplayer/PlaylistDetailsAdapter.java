@@ -1,7 +1,6 @@
 package com.vtmn.audioplayer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,26 +16,26 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 
-public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyHolder> {
+public class PlaylistDetailsAdapter extends RecyclerView.Adapter<PlaylistDetailsAdapter.MyHolder> {
     private final Context mContext;
     private final ArrayList<MusicFiles> playlistFiles;
     View view;
 
-    public PlaylistAdapter(Context mContext, ArrayList<MusicFiles> playlistFiles) {
+    public PlaylistDetailsAdapter(Context mContext, ArrayList<MusicFiles> playlistFiles) {
         this.mContext = mContext;
         this.playlistFiles = playlistFiles;
     }
 
     @NonNull
     @Override
-    public PlaylistAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        view = LayoutInflater.from(mContext).inflate(R.layout.playlist_item, parent, false);
+    public PlaylistDetailsAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        view = LayoutInflater.from(mContext).inflate(R.layout.music_item, parent, false);
         return new MyHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaylistAdapter.MyHolder holder, int position) {
-        holder.playlist_name.setText(playlistFiles.get(position).getAlbum());
+    public void onBindViewHolder(@NonNull PlaylistDetailsAdapter.MyHolder holder, int position) {
+        holder.playlist_name.setText(playlistFiles.get(position).getTitle());
         byte[] image = getAlbumImg(playlistFiles.get(position).getPath());
 
         if (image != null) {
@@ -48,14 +47,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyHold
                     .load(R.drawable.empty)
                     .into(holder.playlist_img);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, PlaylistDetails.class);
-                intent.putExtra("playlistName", playlistFiles.get(position).getAlbum());
-                mContext.startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -66,9 +57,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyHold
     public static class MyHolder extends RecyclerView.ViewHolder {
         ImageView playlist_img;
         TextView playlist_name;
+
         public MyHolder(@NonNull View itemView) {
             super(itemView);
-            playlist_img = itemView.findViewById(R.id.playlist_img);
+            playlist_img = itemView.findViewById(R.id.music_img);
             playlist_name = itemView.findViewById(R.id.playlist_name);
         }
     }
