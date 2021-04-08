@@ -2,6 +2,7 @@ package com.vtmn.audioplayer;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public static final int REQUEST_CODE = 1;
     static ArrayList<MusicFiles> musicFiles;
     static boolean shuffleBoolean = false, repeatBoolean = false;
+    static ArrayList<MusicFiles> playlists = new ArrayList<>();
+    private final String SORT_PREF = "SortOrder";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +109,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    public static ArrayList<MusicFiles> getAllAudio(Context context) {
+    public ArrayList<MusicFiles> getAllAudio(Context context) {
+        SharedPreferences preferences = getSharedPreferences(SORT_PREF, MODE_PRIVATE);
+        String sortOrder = preferences.getString("sorting", "sortByName");
+
+        ArrayList<String> duplicate = new ArrayList<>();
+        playlists.clear();
+
         ArrayList<MusicFiles> tempAudioList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+        String order = null;
+        switch (sortOrder) {
+            case "sortByName":
+                order = MediaStore.MediaColumns.DISPLAY_NAME + " ASC";
+                break;
+            case "sortByDate":
+                order = MediaStore.MediaColumns.DATE_ADDED + " ASC";
+                break;
+            case "sortBySize":
+                order = MediaStore.MediaColumns.SIZE + " DESC";
+                break;
+        }
+
         String[] projection = {
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.TITLE,
@@ -117,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media._ID
         };
-        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, order);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String album = cursor.getString(0);
@@ -129,7 +152,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                 MusicFiles musicFiles = new MusicFiles(path, title, artist, album, duration, id);
                 Log.e("Path" + path, "Album" + album);
+
                 tempAudioList.add(musicFiles);
+                if(!duplicate.contains(album)) {
+                    playlists.add(musicFiles);
+                    duplicate.add(album);
+                }
             }
             cursor.close();
         }
@@ -140,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
         MenuItem menuItem = menu.findItem(R.id.search_option);
-        SearchView searchView = (SearchView)menuItem.getActionView();
+        SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(menu);
     }
@@ -154,12 +182,35 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextChange(String newText) {
         String userInput = newText.toLowerCase();
         ArrayList<MusicFiles> myFiles = new ArrayList<>();
-        for(MusicFiles song : musicFiles) {
-            if(song.getTitle().toLowerCase().contains(userInput)) {
+        for (MusicFiles song : musicFiles) {
+            if (song.getTitle().toLowerCase().contains(userInput)) {
                 myFiles.add(song);
             }
         }
         SongsFragment.musicAdapter.updateList(myFiles);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        SharedPreferences.Editor editor = getSharedPreferences(SORT_PREF, MODE_PRIVATE).edit();
+        switch (item.getItemId()) {
+            case R.id.by_name:
+                editor.putString("sorting", "sortByName");
+                editor.apply();
+                this.recreate();
+                break;
+            case R.id.by_date:
+                editor.putString("sorting", "sortByDate");
+                editor.apply();
+                this.recreate();
+                break;
+            case R.id.by_size:
+                editor.putString("sorting", "sortBySize");
+                editor.apply();
+                this.recreate();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
