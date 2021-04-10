@@ -51,14 +51,10 @@ public class PlaylistDetails extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (playlistSongs.size() < 1) {
-            LinearLayoutManager llm = new LinearLayoutManager(this);
-            llm.setOrientation(LinearLayoutManager.VERTICAL);
-            recyclerView.setLayoutManager(llm);
+        if (!(playlistSongs.size() < 1)) {
+            playlistDetailsAdapter = new PlaylistDetailsAdapter(this, playlistSongs);
             recyclerView.setAdapter(playlistDetailsAdapter);
-//            playlistDetailsAdapter = new PlaylistDetailsAdapter(this, playlistSongs);
-//            recyclerView.setAdapter(playlistDetailsAdapter);
-//            recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         }
     }
 

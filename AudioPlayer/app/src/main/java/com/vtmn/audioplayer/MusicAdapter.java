@@ -29,7 +29,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
 
     MusicAdapter(Context mContext, ArrayList<MusicFiles> mFiles) {
         this.mContext = mContext;
-        this.mFiles = mFiles;
+        MusicAdapter.mFiles = mFiles;
     }
 
     @NonNull

@@ -61,7 +61,7 @@ public class PlaylistDetailsAdapter extends RecyclerView.Adapter<PlaylistDetails
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             playlist_img = itemView.findViewById(R.id.music_img);
-            playlist_name = itemView.findViewById(R.id.playlist_name);
+            playlist_name = itemView.findViewById(R.id.music_file_name);
         }
     }
 
