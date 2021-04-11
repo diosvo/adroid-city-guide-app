@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.vtmn.audioplayer.MainActivity.musicFiles;
+import static com.vtmn.audioplayer.MainActivity.playlists;
 
 public class PlaylistFragment extends Fragment {
 
@@ -26,7 +27,7 @@ public class PlaylistFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_playlist, container, false);
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setHasFixedSize(true);
-        if (!(musicFiles.size() < 1)) {
+        if (!(playlists.size() < 1)) {
             playlistAdapter = new PlaylistAdapter(getContext(), musicFiles);
             recyclerView.setAdapter(playlistAdapter);
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));

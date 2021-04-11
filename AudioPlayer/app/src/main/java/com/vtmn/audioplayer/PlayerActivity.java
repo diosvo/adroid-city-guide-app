@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.vtmn.audioplayer.MainActivity.musicFiles;
+import static com.vtmn.audioplayer.MainActivity.playlists;
 import static com.vtmn.audioplayer.MainActivity.repeatBoolean;
 import static com.vtmn.audioplayer.MainActivity.shuffleBoolean;
 import static com.vtmn.audioplayer.MusicAdapter.mFiles;
@@ -358,12 +359,11 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
     private void getIntentMethod() {
         position = getIntent().getIntExtra("position", -1);
-//        listSongs = musicFiles;
         String sender = getIntent().getStringExtra("playlistDetails");
         if(sender != null && sender.equals("playlistDetails")) {
-            listSongs = musicFiles;
+            listSongs = playlists;
         } else {
-            listSongs = mFiles;
+            listSongs = musicFiles;
         }
         if (listSongs != null) {
             btnPlayPause.setImageResource(R.drawable.ic_pause);
