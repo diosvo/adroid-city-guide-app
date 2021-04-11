@@ -1,6 +1,9 @@
 package com.vtmn.audioplayer;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +13,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -17,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,9 +37,8 @@ import static com.vtmn.audioplayer.MainActivity.musicFiles;
 import static com.vtmn.audioplayer.MainActivity.playlists;
 import static com.vtmn.audioplayer.MainActivity.repeatBoolean;
 import static com.vtmn.audioplayer.MainActivity.shuffleBoolean;
-import static com.vtmn.audioplayer.MusicAdapter.mFiles;
 
-public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
+public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, ActionPlaying, ServiceConnection {
     TextView song_name, artist_name, duration_played, duration_total;
     ImageView img_cover, btnNext, btnPrev, btnBack, btnShuffle, btnRepeat;
     FloatingActionButton btnPlayPause;
@@ -45,7 +49,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     static Uri uri;
     static MediaPlayer mediaPlayer;
     static Handler handler = new Handler();
-    private Thread playThread, prevThread, nextThread;
+    MusicService musicService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,14 +125,23 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     //    Bottom Button
     @Override
     protected void onResume() {
+        Intent intent = new Intent(this, MusicService.class);
+        bindService(intent, this, BIND_AUTO_CREATE);
+
         btnPlayThread();
         btnNextThread();
         btnPrevThread();
         super.onResume();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindService(this);
+    }
+
     private void btnPrevThread() {
-        prevThread = new Thread() {
+        Thread prevThread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -144,7 +157,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     private void btnNextThread() {
-        nextThread = new Thread() {
+        Thread nextThread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -160,7 +173,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     private void btnPlayThread() {
-        playThread = new Thread() {
+        Thread playThread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -175,7 +188,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         playThread.start();
     }
 
-    private void btnPrevClicked() {
+    public void btnPrevClicked() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             mediaPlayer.release();
@@ -238,7 +251,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         }
     }
 
-    private void btnPlayPauseClicked() {
+    public void btnPlayPauseClicked() {
         if (mediaPlayer.isPlaying()) {
             btnPlayPause.setImageResource(R.drawable.ic_play);
             mediaPlayer.pause();
@@ -272,7 +285,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         }
     }
 
-    private void btnNextClicked() {
+    public void btnNextClicked() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             mediaPlayer.release();
@@ -360,7 +373,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     private void getIntentMethod() {
         position = getIntent().getIntExtra("position", -1);
         String sender = getIntent().getStringExtra("playlistDetails");
-        if(sender != null && sender.equals("playlistDetails")) {
+        if (sender != null && sender.equals("playlistDetails")) {
             listSongs = playlists;
         } else {
             listSongs = musicFiles;
@@ -516,6 +529,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         imageView.startAnimation(animOut);
     }
 
+    //    Notification Service
     @Override
     public void onCompletion(MediaPlayer mp) {
         btnNextClicked();
@@ -524,5 +538,18 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(this);
         }
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        MusicService.MyBinder binder = (MusicService.MyBinder) service;
+        musicService = binder.getService();
+        Toast.makeText(this, "Connected" + musicService, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        musicService = null;
+
     }
 }
