@@ -541,7 +541,7 @@ public class PlayerActivity extends AppCompatActivity implements ActionPlaying, 
     public void onServiceConnected(ComponentName name, IBinder service) {
         MusicService.MyBinder binder = (MusicService.MyBinder) service;
         musicService = binder.getService();
-        Toast.makeText(this, "Connected" + musicService, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Connected" + musicService, Toast.LENGTH_SHORT).show();
         seekBar.setMax(musicService.getDuration() / 1000);
         metaData(uri);
 
@@ -571,7 +571,7 @@ public class PlayerActivity extends AppCompatActivity implements ActionPlaying, 
 
         Bitmap thumb = null;
         byte[] picture = null;
-        picture = getAlbumImg(musicFiles.get(position).getPath());
+        picture = getAlbumImg(listSongs.get(position).getPath());
         if (picture != null) {
             thumb = BitmapFactory.decodeByteArray(picture, 0, picture.length);
 
@@ -582,8 +582,8 @@ public class PlayerActivity extends AppCompatActivity implements ActionPlaying, 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(btnPlayPause)
                 .setLargeIcon(thumb)
-                .setContentTitle(musicFiles.get(position).getTitle())
-                .setContentText(musicFiles.get(position).getArtist())
+                .setContentTitle(listSongs.get(position).getTitle())
+                .setContentText(listSongs.get(position).getArtist())
                 .addAction(R.drawable.ic_skip_previous, "Previous", prePending)
                 .addAction(btnPlayPause, "Pause", pausePending)
                 .addAction(R.drawable.ic_skip_next, "Next", nextPending)
