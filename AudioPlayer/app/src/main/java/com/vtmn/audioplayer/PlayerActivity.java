@@ -45,7 +45,6 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     static Uri uri;
     static MediaPlayer mediaPlayer;
     static Handler handler = new Handler();
-    private Thread playThread, prevThread, nextThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +127,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     private void btnPrevThread() {
-        prevThread = new Thread() {
+        Thread prevThread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -144,7 +143,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     private void btnNextThread() {
-        nextThread = new Thread() {
+        Thread nextThread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -160,7 +159,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     private void btnPlayThread() {
-        playThread = new Thread() {
+        Thread playThread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -473,7 +472,6 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             artist_name.setTextColor(Color.DKGRAY);
         }
     }
-
 
     //    Image Animation
     public void ImageAnimation(Context context, ImageView imageView, Bitmap bitmap) {
